@@ -2,9 +2,10 @@ const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: 'Rana123456#',
-    database: 'charityevents_db'
+    user: 'skhan33_eventuser',
+    password: 'Sayyam1122!',
+    database: 'skhan33_charityevents_db',
+    connectTimeout: 10000
 });
 
 connection.connect((error) => {
@@ -13,7 +14,7 @@ connection.connect((error) => {
         return;
     }
 
-    console.log('Connected to charityevents_db successfully!');
+    console.log('Connected to cPanel database successfully!');
 });
 
 module.exports = connection;

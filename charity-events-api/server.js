@@ -7,11 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Charity Events API is running');
 });
 
-app.get('/events', (req, res) => {
+app.get('/api/events', (req, res) => {
     const sql = `
         SELECT events.*, categories.category_name
         FROM events
@@ -31,7 +31,8 @@ app.get('/events', (req, res) => {
         res.json(results);
     });
 });
-app.get('/categories', (req, res) => {
+
+app.get('/api/categories', (req, res) => {
     const sql = 'SELECT * FROM categories';
 
     db.query(sql, (error, results) => {
@@ -43,7 +44,8 @@ app.get('/categories', (req, res) => {
         res.json(results);
     });
 });
-app.get('/events/:id', (req, res) => {
+
+app.get('/api/events/:id', (req, res) => {
     const eventId = req.params.id;
 
     const sql = `
@@ -72,7 +74,7 @@ app.get('/events/:id', (req, res) => {
     });
 });
 
-app.get('/search', (req, res) => {
+app.get('/api/search', (req, res) => {
     const { name, date, location, category } = req.query;
 
     let sql = `
@@ -120,8 +122,7 @@ app.get('/search', (req, res) => {
     });
 });
 
-
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -9,14 +9,15 @@
 </head>
 
 <body>
-    <nav class="navbar">
-    <div class="nav-logo">Charity Events</div>
 
-    <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="search.html">Search Events</a></li>
-    </ul>
-</nav>
+    <nav class="navbar">
+        <div class="nav-logo">Charity Events</div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html">Search Events</a></li>
+        </ul>
+    </nav>
 
     <header>
         <h1>Search Charity Events</h1>
@@ -52,7 +53,7 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000';
+        const API_URL = 'https://24960133.it.scu.edu.au/api';
 
         async function loadCategories() {
             try {
@@ -124,14 +125,26 @@
 
             events.forEach(event => {
                 const eventDiv = document.createElement('div');
+
                 eventDiv.className = 'event-card';
 
                 eventDiv.innerHTML = `
                     <h3>${event.event_name}</h3>
-                    <p><strong>Category:</strong> ${event.category_name}</p>
-                    <p><strong>Location:</strong> ${event.location}</p>
-                    <p><strong>Date:</strong>
-                    ${new Date(event.event_date).toLocaleDateString()}</p>
+
+                    <p>
+                        <strong>Category:</strong>
+                        ${event.category_name}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        ${event.location}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        ${new Date(event.event_date).toLocaleDateString()}
+                    </p>
 
                     <button onclick="viewEvent(${event.event_id})">
                         View Details

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-logo">Charity Events</div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html">Search Events</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Event Details</h1>
+        <p>Find out more about this charity event.</p>
+    </header>
+
+    <div class="container">
+
+        <div id="event-details" class="event-card">
+            <p>Loading event...</p>
+        </div>
+
+        <p id="message"></p>
+
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        async function loadEvent() {
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('id');
+
+            const eventContainer =
+                document.getElementById('event-details');
+
+            const message =
+                document.getElementById('message');
+
+            if (!eventId) {
+                eventContainer.innerHTML = '';
+                message.textContent = 'Event ID was not provided.';
+                return;
+            }
+
+            try {
+                const response =
+                    await fetch(`${API_URL}/events/${eventId}`);
+
+                if (!response.ok) {
+                    throw new Error('Event not found');
+                }
+
+                const event = await response.json();
+
+                eventContainer.innerHTML = `
+                    <h2>${event.event_name}</h2>
+
+                    <p>
+                        <strong>Organisation:</strong>
+                        ${event.organisation_name}
+                    </p>
+
+                    <p>
+                        <strong>Category:</strong>
+                        ${event.category_name}
+                    </p>
+
+                    <p>
+                        <strong>Description:</strong>
+                        ${event.description}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        ${new Date(event.event_date).toLocaleDateString()}
+                    </p>
+
+                    <p>
+                        <strong>Time:</strong>
+                        ${event.event_time}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        ${event.location}
+                    </p>
+
+                    <p>
+                        <strong>Purpose:</strong>
+                        ${event.purpose}
+                    </p>
+
+                    <p>
+                        <strong>Ticket Price:</strong>
+                        $${event.ticket_price}
+                    </p>
+
+                    <p>
+                        <strong>Fundraising Goal:</strong>
+                        $${event.fundraising_goal}
+                    </p>
+
+                    <p>
+                        <strong>Amount Raised:</strong>
+                        $${event.amount_raised}
+                    </p>
+
+                    <button onclick="registerEvent()">
+                        Register
+                    </button>
+                `;
+
+            } catch (error) {
+                eventContainer.innerHTML = '';
+                message.textContent =
+                    'Unable to load event details.';
+            }
+        }
+
+        function registerEvent() {
+            document.getElementById('message').textContent =
+                'This feature is currently under construction.';
+        }
+
+        loadEvent();
+    </script>
+
+</body>
+
+</html>

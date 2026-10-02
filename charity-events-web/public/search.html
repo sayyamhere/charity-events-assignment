@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Events</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+    <div class="nav-logo">Charity Events</div>
+
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="search.html">Search Events</a></li>
+    </ul>
+</nav>
+
+    <header>
+        <h1>Search Charity Events</h1>
+        <p>Find an event that interests you.</p>
+    </header>
+
+    <div class="container">
+
+        <h2>Search Events</h2>
+
+        <div class="search-form">
+
+            <label for="date">Date</label>
+            <input type="date" id="date">
+
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="Enter location">
+
+            <label for="category">Category</label>
+            <select id="category">
+                <option value="">All Categories</option>
+            </select>
+
+            <button onclick="searchEvents()">Search</button>
+            <button onclick="clearFilters()">Clear Filters</button>
+
+        </div>
+
+        <p id="message"></p>
+
+        <div id="events"></div>
+
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_URL}/categories`);
+                const categories = await response.json();
+
+                const categorySelect = document.getElementById('category');
+
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+
+                    option.value = category.category_name;
+                    option.textContent = category.category_name;
+
+                    categorySelect.appendChild(option);
+                });
+
+            } catch (error) {
+                document.getElementById('message').textContent =
+                    'Unable to load categories.';
+            }
+        }
+
+        async function searchEvents() {
+            const date = document.getElementById('date').value;
+            const location = document.getElementById('location').value.trim();
+            const category = document.getElementById('category').value;
+
+            const params = new URLSearchParams();
+
+            if (date) {
+                params.append('date', date);
+            }
+
+            if (location) {
+                params.append('location', location);
+            }
+
+            if (category) {
+                params.append('category', category);
+            }
+
+            try {
+                const response = await fetch(
+                    `${API_URL}/search?${params.toString()}`
+                );
+
+                const events = await response.json();
+
+                displayEvents(events);
+
+            } catch (error) {
+                document.getElementById('message').textContent =
+                    'Unable to search events.';
+            }
+        }
+
+        function displayEvents(events) {
+            const container = document.getElementById('events');
+            const message = document.getElementById('message');
+
+            container.innerHTML = '';
+            message.textContent = '';
+
+            if (events.length === 0) {
+                message.textContent = 'No matching events found.';
+                return;
+            }
+
+            events.forEach(event => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event-card';
+
+                eventDiv.innerHTML = `
+                    <h3>${event.event_name}</h3>
+                    <p><strong>Category:</strong> ${event.category_name}</p>
+                    <p><strong>Location:</strong> ${event.location}</p>
+                    <p><strong>Date:</strong>
+                    ${new Date(event.event_date).toLocaleDateString()}</p>
+
+                    <button onclick="viewEvent(${event.event_id})">
+                        View Details
+                    </button>
+                `;
+
+                container.appendChild(eventDiv);
+            });
+        }
+
+        function clearFilters() {
+            document.getElementById('date').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('events').innerHTML = '';
+            document.getElementById('message').textContent = '';
+        }
+
+        function viewEvent(id) {
+            window.location.href = `event.html?id=${id}`;
+        }
+
+        loadCategories();
+    </script>
+
+</body>
+
+</html>

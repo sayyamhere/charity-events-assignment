@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Charity Events</title>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-logo">Charity Events</div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html">Search Events</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Charity Events</h1>
+        <p>Find upcoming charity events in your community.</p>
+    </header>
+
+    <div class="container">
+
+        <h2>Upcoming Events</h2>
+
+        <div id="events"></div>
+
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${API_URL}/events`);
+                const events = await response.json();
+
+                displayEvents(events);
+
+            } catch (error) {
+                document.getElementById('events').innerHTML =
+                    '<p>Unable to load events.</p>';
+            }
+        }
+
+        function displayEvents(events) {
+            const container = document.getElementById('events');
+
+            container.innerHTML = '';
+
+            if (events.length === 0) {
+                container.innerHTML = '<p>No events found.</p>';
+                return;
+            }
+
+            events.forEach(event => {
+                const eventDiv = document.createElement('div');
+
+                eventDiv.className = 'event-card';
+
+                eventDiv.innerHTML = `
+                    <h3>${event.event_name}</h3>
+
+                    <p>
+                        <strong>Category:</strong>
+                        ${event.category_name}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        ${event.location}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        ${new Date(event.event_date).toLocaleDateString()}
+                    </p>
+
+                    <p>
+                        <strong>Ticket Price:</strong>
+                        $${event.ticket_price}
+                    </p>
+
+                    <p>${event.description}</p>
+
+                    <button onclick="viewEvent(${event.event_id})">
+                        View Details
+                    </button>
+                `;
+
+                container.appendChild(eventDiv);
+            });
+        }
+
+        function viewEvent(id) {
+            window.location.href = `event.html?id=${id}`;
+        }
+
+        loadEvents();
+    </script>
+
+</body>
+
+</html>
